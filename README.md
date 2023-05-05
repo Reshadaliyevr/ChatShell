@@ -29,4 +29,4 @@ We welcome contributions from the community. If you would like to contribute to 
 If you encounter any issues while using Chatshell, please open an issue on the GitHub repository page.
 
 # License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the BSL-1.0 license. See the LICENSE file for details.
