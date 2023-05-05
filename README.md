@@ -6,7 +6,7 @@ To get started with Chatshell, you'll need to clone the repository to your local
 
 # Copy
     
-    ```git clone https://github.com/Reshadaliyevr/ChatShell.git```
+    ``` git clone https://github.com/Reshadaliyevr/ChatShell.git ```
 
 
 # Prerequisites
@@ -20,8 +20,8 @@ To install the required Python dependencies for Chatshell, navigate to the proje
 Once you have installed the dependencies, you can run Chatshell from the command line:
 
 # Copy
-python chatshell.py
-Contributing
+``` python chatshell.py ```
+# Contributing
 We welcome contributions from the community. If you would like to contribute to this project, please fork the repository and submit a pull request.
 
 # Issues
