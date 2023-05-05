@@ -9,16 +9,14 @@ To get started with Chatshell, you'll need to clone the repository to your local
     git clone https://github.com/Reshadaliyevr/ChatShell.git
     ```
 
-#Prerequisites
+# Prerequisites
 Before you can use Chatshell, you'll need to have the following software installed on your machine:
-
-Python 3.5 or higher
-pip
-Installing Dependencies
+. Python 3.5 or higher
+. pip
+# Installing Dependencies
 To install the required Python dependencies for Chatshell, navigate to the project directory and run:
-
-pip install -r requirements.txt
-Running Chatshell
+```pip install -r requirements.txt```
+# Running Chatshell
 Once you have installed the dependencies, you can run Chatshell from the command line:
 
 # Copy
