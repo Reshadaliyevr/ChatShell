@@ -5,8 +5,9 @@ Chatshell is a project that enables users to use their operating system as a cha
 To get started with Chatshell, you'll need to clone the repository to your local machine:
 
 # Copy
-REM Clone the repository to your local machine
-git clone https://github.com/your-username/chatshell.git
+    ```
+    git clone https://github.com/Reshadaliyevr/ChatShell.git
+    ```
 
 #Prerequisites
 Before you can use Chatshell, you'll need to have the following software installed on your machine:
