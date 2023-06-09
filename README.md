@@ -6,11 +6,8 @@ ChatShell is currently in the early stages of development. While functional, it 
 
 ## Getting Started
 To get started with Chatshell, you'll need to clone the repository to your local machine:
-
-# Copy
     
     ``` git clone https://github.com/Reshadaliyevr/ChatShell.git ```
-
 
 # Prerequisites
 Before you can use Chatshell, you'll need to have the following software installed on your machine:
@@ -24,7 +21,6 @@ To install the required Python dependencies for Chatshell, navigate to the proje
 # Running Chatshell
 Once you have installed the dependencies, you can run Chatshell from the command line:
 
-# Copy
 ``` python chatshell.py ```
 
 # Contributing
