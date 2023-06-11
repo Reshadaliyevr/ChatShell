@@ -26,7 +26,7 @@ else:
 
 console = Console()
 
-def query_gpt(prompt):
+def query_gpt(prompt,api_key):
     #take input as key variable
     openai.api_key = api_key
     response = openai.Completion.create(
@@ -39,7 +39,22 @@ def query_gpt(prompt):
         presence_penalty=0
     )
     return response.choices[0].text.strip()
-
+# validate if a valid key
+def is_valid_key(api_key):
+    openai.api_key = api_key
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-002",
+            prompt="hello",
+            max_tokens = 5
+        )
+        # if a valid api_key 
+        if response['status'] == 200:
+            return True
+        else:
+            return False
+    except openai.OpenAIError as e:
+        return False
 def execute_powershell(script):
     process = subprocess.Popen(["powershell.exe", script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = process.communicate()
@@ -59,7 +74,12 @@ def main_menu():
 def main():
     console.print("Welcome to the PowerShell Admin tool.", style="bold")
     task_history = []
-    api_key = input("Add your API key: ")
+    api_key = ""
+    # repeat till the use give valid key
+    while True:
+        api_key = input("Enter your OpenAI API key :")
+        if is_valid_key(api_key):
+            break
     while True:
         action = main_menu()
 
@@ -88,7 +108,7 @@ def main():
             task = prompt("Enter a detailed description of the task you want to perform: ")
             prompt_text = f"Here is a PowerShell script to {task} (make sure to use the current user's desktop):\n\n"
             # Add more context to the prompt for better understanding
-            response_text = query_gpt(prompt_text + "Details: " + task + "\n\n")
+            response_text = query_gpt(prompt_text + "Details: " + task + "\n\n", api_key)
             match = re.search(r'(?s)(?<=```).+?(?=```)|\n\n[^`].*?(?=\n\n|$)', response_text)
             if match:
                 powershell_script = match.group(0).strip()
@@ -106,7 +126,7 @@ def main():
                     console.print(f"\n[bold red]Error:[/bold red]\n\n{error}")
                     # Ask the AI to fix the error
                     prompt = f"The PowerShell script generated an error:\n\n{error}\n\nCan you provide a fixed version of the script?\n\nScript:\n\n```{powershell_script}```\n\n"
-                    response_text = query_gpt(prompt)
+                    response_text = query_gpt(prompt, api_key)
                     match = re.search(r'(?s)(?<=```).+?(?=```)|\n\n[^`].*?(?=\n\n|$)', response_text)
                     if match:
                         fixed_script = match.group(0).strip()
