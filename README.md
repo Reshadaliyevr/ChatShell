@@ -1,5 +1,5 @@
 # ChatShell
-Chatshell is a project that enables users to use their operating system as a chat platform. This project is currently a work in progress and is not yet ready for use.
+Chatshell is a project that enables users to use their operating system as a AI chat platform. This project is currently a work in progress and is not yet ready for use.
 
 ## Current State
 ChatShell is currently in the early stages of development. While functional, it requires several updates to handle complex tasks and improve overall performance.
