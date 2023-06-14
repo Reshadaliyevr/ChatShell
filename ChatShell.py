@@ -62,9 +62,7 @@ def is_valid_key(api_key):
             max_tokens = 5
         )
         return True
-
     except openai.OpenAIError as e:
-
         return False
 def execute_powershell(script):
     process = subprocess.Popen(["powershell.exe", script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -89,16 +87,11 @@ def main():
     if not api_key2:
         while True:
             api_key = input("Enter your OpenAI API key: ")
-            if is_valid_key(api_key2):
+            if is_valid_key(api_key):
                 save_option = input("Do you want to save the API key for next time? (y/n): ").lower()
                 if save_option == 'y':
-                    save_api_key(api_key2)
+                    save_api_key(api_key)
                 break
-    # repeat till the use give valid key
-    while True:
-        api_key = api_key2
-        if is_valid_key(api_key):
-            break
     while True:
         action = main_menu()
 
