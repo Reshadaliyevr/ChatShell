@@ -1,11 +1,10 @@
 import openai
 import re
 import subprocess
-from rich.console import Console
-from rich.table import Table
-import os
 import sys
 import ctypes
+from rich.console import Console
+from rich.table import Table
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.shortcuts import button_dialog
@@ -62,12 +61,17 @@ def is_valid_key(api_key):
             max_tokens = 5
         )
         return True
+
     except openai.OpenAIError as e:
+
         return False
 def execute_powershell(script):
     process = subprocess.Popen(["powershell.exe", script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = process.communicate()
     return output.decode('utf-8'), error.decode('utf-8')
+
+#initializing converstaion history
+conversation_history = []
 
 def main_menu():
     menu_text = """\nPowerShell Admin Tool
@@ -78,20 +82,23 @@ def main_menu():
 \nPlease choose an option (1-4): """
     return prompt(menu_text, completer=WordCompleter(["1", "2", "3", "4"]))
 
-
-
 def main():
     console.print("Welcome to the PowerShell Admin tool.", style="bold")
     task_history = []
-    loaded_api_key = load_api_key()
-    if not loaded_api_key or not is_valid_key(loaded_api_key):
+    api_key2 = load_api_key()
+    if not api_key2:
         while True:
-            api_key = input("Enter your OpenAI API key: ")
-            if is_valid_key(api_key):
+            api_key2 = input("Enter your OpenAI API key: ")
+            if is_valid_key(api_key2):
                 save_option = input("Do you want to save the API key for next time? (y/n): ").lower()
                 if save_option == 'y':
-                    save_api_key(api_key)
+                    save_api_key(api_key2)
                 break
+    # repeat till the use give valid key
+    while True:
+        api_key = api_key2
+        if is_valid_key(api_key):
+            break
     while True:
         action = main_menu()
 
@@ -118,9 +125,21 @@ def main():
         elif action == '1':
             # Perform a task
             task = prompt("Enter a detailed description of the task you want to perform: ")
-            prompt_text = f"From now on act as a senior developer who is skilled in powershell scripting. Provide Powershell script for this task write script between ```(script)```. Here is task: {task} :\n\n"
+            
+            #Add user task to converstaion history
+            conversation_history.append(f"User: {task}")
+            
+             # Construct the prompt with conversation history
+            prompt_text = "From now on act as a senior developer who is skilled in powershell scripting.\n"
+            for exchange in conversation_history:
+                prompt_text += exchange + "\n"
+            prompt_text += "Please provide Powershell script for this task and write the script between ```(script)```.\n\n"
             # Add more context to the prompt for better understanding
             response_text = query_gpt(prompt_text, api_key)
+
+            # Add AI response to conversation history
+            conversation_history.append(f"AI: {response_text}")
+
             match = re.search(r'(?s)(?<=```).+?(?=```)|\n\n[^`].*?(?=\n\n|$)', response_text)
             if match:
                 powershell_script = match.group(0).strip()
