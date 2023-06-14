@@ -48,12 +48,9 @@ def is_valid_key(api_key):
             prompt="hello",
             max_tokens = 5
         )
-        # if a valid api_key 
-        if response['status'] == 200:
-            return True
-        else:
-            return False
+        return True
     except openai.OpenAIError as e:
+
         return False
 def execute_powershell(script):
     process = subprocess.Popen(["powershell.exe", script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -125,8 +122,8 @@ def main():
                 if error:
                     console.print(f"\n[bold red]Error:[/bold red]\n\n{error}")
                     # Ask the AI to fix the error
-                    prompt = f"The PowerShell script generated an error:\n\n{error}\n\nCan you provide a fixed version of the script?\n\nScript:\n\n```{powershell_script}```\n\n"
-                    response_text = query_gpt(prompt, api_key)
+                    error_prompt = f"The PowerShell script generated an error:\n\n{error}\n\nCan you provide a fixed version of the script?\n\nScript:\n\n```{powershell_script}```\n\n"
+                    response_text = query_gpt(error_prompt, api_key)
                     match = re.search(r'(?s)(?<=```).+?(?=```)|\n\n[^`].*?(?=\n\n|$)', response_text)
                     if match:
                         fixed_script = match.group(0).strip()
@@ -153,9 +150,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
