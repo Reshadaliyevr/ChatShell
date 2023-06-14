@@ -26,6 +26,19 @@ else:
 
 console = Console()
 
+
+def save_api_key(api_key):
+    with open('api_key.txt', 'w') as file:
+        file.write(api_key)
+
+def load_api_key():
+    try:
+        with open('api_key.txt', 'r') as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        return None
+
+
 def query_gpt(prompt,api_key):
     #take input as key variable
     openai.api_key = api_key
@@ -49,6 +62,7 @@ def is_valid_key(api_key):
             max_tokens = 5
         )
         return True
+
     except openai.OpenAIError as e:
 
         return False
@@ -71,10 +85,18 @@ def main_menu():
 def main():
     console.print("Welcome to the PowerShell Admin tool.", style="bold")
     task_history = []
-    api_key = ""
+    api_key2 = load_api_key()
+    if not api_key2:
+        while True:
+            api_key = input("Enter your OpenAI API key: ")
+            if is_valid_key(api_key2):
+                save_option = input("Do you want to save the API key for next time? (y/n): ").lower()
+                if save_option == 'y':
+                    save_api_key(api_key2)
+                break
     # repeat till the use give valid key
     while True:
-        api_key = input("Enter your OpenAI API key :")
+        api_key = api_key2
         if is_valid_key(api_key):
             break
     while True:
@@ -103,9 +125,9 @@ def main():
         elif action == '1':
             # Perform a task
             task = prompt("Enter a detailed description of the task you want to perform: ")
-            prompt_text = f"Here is a PowerShell script to {task} (make sure to use the current user's desktop):\n\n"
+            prompt_text = f"From now on act as a senior developer who is skilled in powershell scripting. Provide Powershell script for this task write script between ```(script)```. Here is task: {task} :\n\n"
             # Add more context to the prompt for better understanding
-            response_text = query_gpt(prompt_text + "Details: " + task + "\n\n", api_key)
+            response_text = query_gpt(prompt_text, api_key)
             match = re.search(r'(?s)(?<=```).+?(?=```)|\n\n[^`].*?(?=\n\n|$)', response_text)
             if match:
                 powershell_script = match.group(0).strip()
