@@ -1,5 +1,5 @@
 # ChatShell
-Chatshell is a project that enables users to use their operating system as a AI chat platform. This project is currently a work in progress and is not yet ready for use.
+Chatshell is a project that enables users to use their operating system as a AI chat platform. This project is currently a work in progress, I suggest running this program only in virtual machines.
 
 ## Current State
 ChatShell is currently in the early stages of development. While functional, it requires several updates to handle complex tasks and improve overall performance.
@@ -24,7 +24,7 @@ Once you have installed the dependencies, you can run Chatshell from the command
 ``` python chatshell.py ```
 
 # Contributing
-We welcome contributions to help improve ChatShell! If you're interested in contributing, please see our `CONTRIBUTING.md` file for guidelines.
+I welcome contributions to help improve ChatShell! If you're interested in contributing, please see our `CONTRIBUTING.md` file for guidelines.
 
 # Issues
 If you encounter any issues while using Chatshell, please open an issue on the GitHub repository page.
