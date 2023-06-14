@@ -73,6 +73,8 @@ def execute_powershell(script):
 #initializing converstaion history
 conversation_history = []
 
+# Keyword that indicate reference to prior conversation
+reference_keywords = ["that", "previous", "earlier", "before", "last", "rename"]
 def main_menu():
     menu_text = """\nPowerShell Admin Tool
 1. Perform a task
@@ -120,17 +122,24 @@ def main():
 
         elif action == '1':
             # Perform a task
-            task = prompt("Enter a detailed description of the task you want to perform: ")
+            user_task = prompt("Enter a detailed description of the task you want to perform: ")
             
+            #Detect if user input contains reference keywords
+            use_converstaion_history = any(keyword in user_task.lower() for keyword in reference_keywords)
             #Add user task to converstaion history
-            conversation_history.append(f"User: {task}")
+            conversation_history.append(f"User: {user_task}")
             
-             # Construct the prompt with conversation history
-            prompt_text = "From now on act as a senior developer who is skilled in powershell scripting.\n"
-            for exchange in conversation_history:
-                prompt_text += exchange + "\n"
-            prompt_text += "Please provide Powershell script for this task and write the script between ```  ```.\n\n"
-            # Add more context to the prompt for better understanding
+            # Construct the prompt
+            prompt_text = "As a senior developer skilled in PowerShell scripting, please provide a PowerShell script for the following task:\n"
+            
+            # Include conversation history in prompt if flag is set
+            if use_converstaion_history:
+                prompt_text += "\n".join(conversation_history[-2:]) + "\n\nTask: "
+
+            # Add current task to prompt
+            prompt_text += f"{user_task}\n\n```script```\n"
+            
+            # Query the AI
             response_text = query_gpt(prompt_text, api_key)
 
             # Add AI response to conversation history
@@ -143,6 +152,8 @@ def main():
                 powershell_script = response_text.strip()
 
             console.print(f"\n[bold green]Generated PowerShell script:[/bold green]\n\n{powershell_script}")
+
+
 
             run_script = input("\nDo you want to run this script? (y/n): ")
             if run_script.lower() == 'y':
@@ -174,9 +185,33 @@ def main():
                         console.print("Skipping fixed script execution.")
 
             else:
-                console.print("Skipping script execution.")
+                change_script = input("\nDo you want to change the script? (y/n): ")
+                if change_script.lower() == 'y':
+                    # Ask the AI to fix the script
+                    change_prompt = f"I am not satisfied with the following PowerShell script:\n\n```{powershell_script}```\n\nCan you provide an alternative version of the script in this form?: ```script```\n\n"
+                    response_text = query_gpt(change_prompt, api_key)
+                    match = re.search(r'(?s)(?<=```).+?(?=```)|\n\n[^`].*?(?=\n\n|$)', response_text)
+                    if match:
+                        alternative_script = match.group(0).strip()
+                    else:
+                        print("The AI didn't return an alternative script in the expected format. Please try again.")
+                        return
 
-            task_history.append(task)
+                    console.print(f"\n[bold green]Alternative PowerShell script:[/bold green]\n\n{alternative_script}")
+
+                    # Run the fixed script
+                    run_alternative_script = input("\nDo you want to run the alternative script? (y/n): ")
+                    if run_alternative_script.lower() == 'y':
+                        output, error = execute_powershell(alternative_script)
+                        if output:
+                            console.print(f"\n[bold green]Output:[/bold green]\n\n{output}")
+                        if error:
+                            console.print(f"\n[bold red]Error:[/bold red]\n\n{error}")
+                    else:
+                        console.print("Skipping fixed script execution.")
+                else:
+                    console.print("Skipping fixed script execution.")
+            task_history.append(user_task)
 
 if __name__ == "__main__":
     main()
