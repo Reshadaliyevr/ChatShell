@@ -85,23 +85,19 @@ def main_menu():
 def main():
     console.print("Welcome to the PowerShell Admin tool.", style="bold")
     task_history = []
-    api_key2 = load_api_key()
-    if not api_key2:
+    loaded_api_key = load_api_key()
+    if not loaded_api_key or not is_valid_key(loaded_api_key):
         while True:
-            api_key2 = input("Enter your OpenAI API key: ")
-            if is_valid_key(api_key2):
+            api_key = input("Enter your OpenAI API key: ")
+            if is_valid_key(api_key):
                 save_option = input("Do you want to save the API key for next time? (y/n): ").lower()
                 if save_option == 'y':
-                    save_api_key(api_key2)
+                    save_api_key(api_key)
                 break
-    # repeat till the use give valid key
-    while True:
-        api_key = api_key2
-        if is_valid_key(api_key):
-            break
+    else:
+        api_key = loaded_api_key
     while True:
         action = main_menu()
-
         if action == '2':
             # View task history
             table = Table(title="Task History")
@@ -133,7 +129,7 @@ def main():
             prompt_text = "From now on act as a senior developer who is skilled in powershell scripting.\n"
             for exchange in conversation_history:
                 prompt_text += exchange + "\n"
-            prompt_text += "Please provide Powershell script for this task and write the script between ```(script)```.\n\n"
+            prompt_text += "Please provide Powershell script for this task and write the script between ```  ```.\n\n"
             # Add more context to the prompt for better understanding
             response_text = query_gpt(prompt_text, api_key)
 
