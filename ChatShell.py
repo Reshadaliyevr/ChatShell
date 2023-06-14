@@ -85,15 +85,20 @@ def main_menu():
 def main():
     console.print("Welcome to the PowerShell Admin tool.", style="bold")
     task_history = []
-    loaded_api_key = load_api_key()
-    if not loaded_api_key or not is_valid_key(loaded_api_key):
+    api_key2 = load_api_key()
+    if not api_key2:
         while True:
-            api_key = input("Enter your OpenAI API key: ")
-            if is_valid_key(api_key):
+            api_key2 = input("Enter your OpenAI API key: ")
+            if is_valid_key(api_key2):
                 save_option = input("Do you want to save the API key for next time? (y/n): ").lower()
                 if save_option == 'y':
-                    save_api_key(api_key)
+                    save_api_key(api_key2)
                 break
+    # repeat till the use give valid key
+    while True:
+        api_key = api_key2
+        if is_valid_key(api_key):
+            break
     while True:
         action = main_menu()
 
